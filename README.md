@@ -7,4 +7,6 @@ store and retrieve objects from AWS s3
 
 ->Get the access key and secret key from AWS and add them in properties file.
 
+-> update region and bucket name in properties file.
+
 -> build the project and run
