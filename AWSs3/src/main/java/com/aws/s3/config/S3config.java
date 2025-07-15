@@ -1,0 +1,47 @@
+package com.aws.s3.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import jakarta.annotation.PostConstruct;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+
+@Configuration
+public class S3config {
+
+	@Value("${cloud.aws.credentials.secret-key}")
+	private String secretKey;
+
+	@Value("${cloud.aws.credentials.access-key}")
+	private String accessKey;
+
+	@Value("${cloud.aws.region.static}")
+	private String region;
+	
+
+	@PostConstruct
+	public void init() {
+		System.out.println("Access Key: " + accessKey);
+		System.out.println("Secret Key: " + secretKey);
+	}
+
+	@Bean
+	public AwsBasicCredentials awsBasicCredentials() {
+		System.out.println(
+				"Creating AwsBasicCredentials with Access Key: " + accessKey + " and Secret Key: " + secretKey);
+		return AwsBasicCredentials.create(accessKey, secretKey);
+	}
+
+    @Bean
+    S3Client s3Client() {
+		return S3Client.builder().region(Region.of(region))
+					.credentialsProvider(StaticCredentialsProvider
+					.create(awsBasicCredentials()))
+					.build();
+	}
+
+}
